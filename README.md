@@ -129,3 +129,33 @@ Failed jobs can be viewed by executing view_failed_jobs file
 Failed Jobs:
 Job ID: b'job-0702cab6-5f7d-4fb2-8d5f-e3fb8698662a', Data: {b'file': b'image_2.png', b'action': b'process_image', b'status': b'failed', b'retries': b'3', b'created_at': b'1754461389.666352', b'error': b'Simulated failure', 'job_id': b'job-0702cab6-5f7d-4fb2-8d5f-e3fb8698662a'}
 ```
+# Strategy: Graceful Shutdown for a Worker
+help the app cleanly start and exit, ensuring Redis connections close, no data is lost,
+and workers don’t get stuck halfway.
+
+producer.py → pushes JSON-encoded jobs to list key job_queue.
+worker.py → pops from job_queue, processes job, and handles shutdown gracefully.
+Jobs will be automatically removed after being processed (with no leftover Redis keys like before).
+
+Start redis - run  worker.py - run  producer.py (in another terminal) - stop  worker cleanly with ctrl+C — to observe
+
+```bash
+(.venv) ankitaduttagupta@ANKITAs-MacBook-Air redis-job-queue-system % python3 simple_producer.py
+ Worker started. Waiting for jobs...
+Processing job: job-0 with payload: {'data': 'value-0'}
+ Finished: job-0
+Processing job: job-1 with payload: {'data': 'value-1'}
+ Finished: job-1
+Processing job: job-2 with payload: {'data': 'value-2'}
+ Finished: job-2
+Processing job: job-3 with payload: {'data': 'value-3'}
+ Finished: job-3
+Processing job: job-4 with payload: {'data': 'value-4'}
+ Finished: job-4
+^C
+Received signal 2. Preparing to shut down...
+^C
+Received signal 2. Preparing to shut down...
+Exiting worker loop.
+Graceful shutdown complete.
+```
