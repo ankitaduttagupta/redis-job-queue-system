@@ -6,6 +6,11 @@ This POC demonstrates a lightweight custom job queue using Redis as the backend.
 - Connection pooling via `redis-py`
 - Simple retry hooks
 - Blocking queue consumption (`BLPOP`)
+- Redis async worker is running
+- Prometheus metrics are exposed on localhost:8000
+- Prometheus server is scraping metrics from your worker
+- View real-time metrics (job_success_total, job_failure_total,
+  job_queue_length) in the Prometheus dashboard localhost:9090
 
 ## How to Run
 
@@ -159,3 +164,7 @@ Received signal 2. Preparing to shut down...
 Exiting worker loop.
 Graceful shutdown complete.
 ```
+# Prometheus metrics
+<img width="1280" height="832" alt="Screenshot 2025-08-06 at 18 30 15" src="https://github.com/user-attachments/assets/ed49a254-d4d8-4cf2-86bd-11b78c6c956a" />
+<img width="1280" height="832" alt="Screenshot 2025-08-06 at 18 29 57" src="https://github.com/user-attachments/assets/4df6518f-5efd-4afc-b216-069b537bee61" />
+
